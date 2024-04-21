@@ -9,11 +9,11 @@ const todoListController = {
 
       (await db()).end();
 
-      res.render("toDoList", { todoList });
+      res.render("todos/toDoList", { todoList });
     } catch (error) {
       (await db()).end();
 
-      res.render("toDoList", { todoList: [] });
+      res.render("todos/toDoList", { todoList: [] });
     }
   },
   update: async (req, res) => {
@@ -30,16 +30,7 @@ const todoListController = {
 
       (await db()).end();
 
-      res.send(`
-          <input
-            type="checkbox"
-            name="is_done"
-            value=${!todo.is_done}
-            ${todo.is_done ? "checked" : ""}
-            hx-put="/todos/${id}"
-            hx-target="this"
-            hx-swap="outerHTML"/>
-      `);
+      res.render("todos/toDoInput", { todo });
     } catch (error) {
       (await db()).end();
     }
