@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('layout/head', {title: 'To Do List'}); -%>
+<body>
+  <h1>To Do List</h1>
+  <ul>
+    <% todoList.forEach(todo => { %>
+      <li>
+        <input 
+          type="checkbox" 
+          name="is_done"
+          value=<%= !todo.is_done %>
+          <%= todo.is_done ? "checked" : "" %>
+          hx-put="/todos/<%= todo.id %>"
+          hx-target="this"
+          hx-swap="outerHTML"
+          /> 
+        <%= todo.name %>
+      </li>
+    <% }) %>
+  </ul>
+</body>
+</html>

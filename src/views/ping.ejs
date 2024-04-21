@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('layout/head', {title: 'Ping'}); -%>
+<body>
+  <button id="ping" hx-post="/ping" hx-trigger="click" hx-target="#ping" hx-swap="innerHTML">
+    <%= ping %>
+  </button>
+</body>
+</html>
