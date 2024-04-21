@@ -4,12 +4,8 @@ const todoListController = {
   index: async (_, res) => {
     const todoList = await db
       .multi("SELECT * from htmx1_todos")
-      .then((data) => {
-        return data[0];
-      })
-      .catch((error) => {
-        return error;
-      });
+      .then((data) => data[0])
+      .catch((error) => error);
 
     res.render("toDoList", { todoList });
   },
@@ -24,12 +20,8 @@ const todoListController = {
           [isDone, id]
         );
       })
-      .then((data) => {
-        return data;
-      })
-      .catch((error) => {
-        return error;
-      });
+      .then((data) => data)
+      .catch((error) => error);
 
     if (todo.is_done) {
       res.send(`
