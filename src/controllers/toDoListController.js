@@ -2,48 +2,46 @@ const db = require("../configs/database");
 
 const todoListController = {
   index: async (_, res) => {
-    const todoList = await db
-      .multi("SELECT * from htmx1_todos")
-      .then((data) => data[0])
-      .catch((error) => error);
+    const raw = (await db()).query("SELECT * from htmx1_todos");
 
-    res.render("toDoList", { todoList });
+    try {
+      const todoList = (await raw).rows;
+
+      (await db()).end();
+
+      res.render("toDoList", { todoList });
+    } catch (error) {
+      (await db()).end();
+
+      res.render("toDoList", { todoList: [] });
+    }
   },
   update: async (req, res) => {
     const id = req.params.id;
     const isDone = req.body.is_done || false;
 
-    const todo = await db
-      .task((t) => {
-        return t.one(
-          "UPDATE htmx1_todos SET is_done = $1 WHERE id = $2 RETURNING is_done",
-          [isDone, id]
-        );
-      })
-      .then((data) => data)
-      .catch((error) => error);
+    const raw = (await db()).query(
+      "UPDATE htmx1_todos SET is_done = $1 WHERE id = $2 RETURNING is_done",
+      [isDone, id]
+    );
 
-    if (todo.is_done) {
+    try {
+      const todo = (await raw).rows[0];
+
+      (await db()).end();
+
       res.send(`
-        <input
-          type="checkbox"
-          name="is_done"
-          value=${!todo.is_done}
-          checked
-          hx-put="/todos/${id}"
-          hx-target="this"
-          hx-swap="outerHTML"/>
-    `);
-    } else {
-      res.send(`
-        <input
-          type="checkbox"
-          name="is_done"
-          value="${!todo.is_done}"
-          hx-put="/todos/${id}"
-          hx-target="this"
-          hx-swap="outerHTML"/>
-    `);
+          <input
+            type="checkbox"
+            name="is_done"
+            value=${!todo.is_done}
+            ${todo.is_done ? "checked" : ""}
+            hx-put="/todos/${id}"
+            hx-target="this"
+            hx-swap="outerHTML"/>
+      `);
+    } catch (error) {
+      (await db()).end();
     }
   },
 };
