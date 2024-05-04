@@ -60,6 +60,38 @@ const todoListController = {
       (await db()).end();
     }
   },
+  toggleDelete: async (req, res) => {
+    const id = req.params.id;
+    const is_hide = req.query.is_hide;
+
+    const raw = (await db()).query("SELECT * from htmx1_todos WHERE id = $1", [
+      id,
+    ]);
+
+    try {
+      const todo = (await raw).rows[0];
+
+      (await db()).end();
+
+      // TODO:
+      // - create component and use is_hide on client
+      // - handle delete request
+      res.send(`<span 
+          hx-get="/todos/${todo.id}${is_hide ? "" : "?is_hide=true"}" 
+          hx-trigger="${is_hide ? "mouseenter once" : "mouseleave once"}"
+          hx-swap="innerHTML"
+          hx-target="this">
+            ${todo.name} 
+            ${
+              is_hide
+                ? ""
+                : "<small style='color: red; cursor: pointer;'>(Delete ?)</small>"
+            }
+        </span>`);
+    } catch (error) {
+      (await db()).end();
+    }
+  },
 };
 
 module.exports = todoListController;
