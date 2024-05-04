@@ -1,5 +1,7 @@
 <small
     hx-delete="/todos/<%= todo.id %>" 
+    hx-target="#todo-list" 
+    hx-swap="outerHTML" 
     style='color: red; cursor: pointer;'>
         (Delete ?)
 </small>

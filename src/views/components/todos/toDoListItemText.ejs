@@ -3,6 +3,6 @@
     hx-trigger="<%- todo.config.is_delete_active ? "mouseleave once" : "mouseenter once" -%>"
     hx-swap="innerHTML"
     hx-target="this">
-        <%= todo.name %>
+        <%- todo.name ? todo.name : '-' -%>
         <%- todo.config.is_delete_active ? include('./toDoDeleteButton', {todo}): "" -%>
 </span>

@@ -8,5 +8,6 @@ router.get("/", todoListController.index);
 router.post("/todos", todoListController.create);
 router.put("/todos/:id", todoListController.update);
 router.get("/todos/:id", todoListController.toggleDelete);
+router.delete("/todos/:id", todoListController.delete);
 
 module.exports = router;

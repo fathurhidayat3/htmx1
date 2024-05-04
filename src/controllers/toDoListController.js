@@ -7,7 +7,9 @@ const appendTodoConfig = (todos) =>
 
 const todoListController = {
   index: async (_, res) => {
-    const raw = (await db()).query("SELECT * from htmx1_todos ORDER BY name");
+    const raw = (await db()).query(
+      "SELECT * FROM htmx1_todos ORDER BY created_at"
+    );
 
     try {
       const todoList = (await raw).rows;
@@ -30,7 +32,9 @@ const todoListController = {
     );
 
     // NOTE: better to be handled with refetch/append new item on client
-    const raw = (await db()).query("SELECT * from htmx1_todos ORDER BY name");
+    const raw = (await db()).query(
+      "SELECT * FROM htmx1_todos ORDER BY created_at"
+    );
 
     try {
       const todoList = (await raw).rows;
@@ -73,7 +77,7 @@ const todoListController = {
     const id = req.params.id;
     const is_delete_active = req.query.is_delete_active === "true";
 
-    const raw = (await db()).query("SELECT * from htmx1_todos WHERE id = $1", [
+    const raw = (await db()).query("SELECT * FROM htmx1_todos WHERE id = $1", [
       id,
     ]);
 
@@ -82,13 +86,37 @@ const todoListController = {
 
       (await db()).end();
 
-      // TODO:
-      // - handle delete request
       res.render("components/todos/toDoListItemText", {
         todo: { ...todo, config: { is_delete_active: !is_delete_active } },
       });
     } catch (error) {
       (await db()).end();
+    }
+  },
+  delete: async (req, res) => {
+    const id = req.params.id;
+
+    (await db()).query("DELETE FROM htmx1_todos WHERE id = $1", [id]);
+
+    // NOTE: better to be handled with refetch/append new item on client
+    const raw = (await db()).query(
+      "SELECT * FROM htmx1_todos ORDER BY created_at"
+    );
+
+    try {
+      const todoList = (await raw).rows;
+
+      (await db()).end();
+
+      res.render("components/todos/toDoList", {
+        todoList: appendTodoConfig(todoList),
+      });
+    } catch (error) {
+      (await db()).end();
+
+      res.render("components/todos/toDoList", {
+        todoList: appendTodoConfig([]),
+      });
     }
   },
 };
