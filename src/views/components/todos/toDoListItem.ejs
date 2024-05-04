@@ -1,10 +1,4 @@
 <li class="<%= todo.id %>">
     <%- include('./toDoCheckbox', {todo}); -%>
-    <span 
-        hx-get="/todos/<%= todo.id %>" 
-        hx-trigger="mouseenter once"
-        hx-swap="innerHTML"
-        hx-target="this">
-            <%= todo.name %>
-    </span>
+    <%- include('./toDoListItemText', {todo}); -%>
 </li>
